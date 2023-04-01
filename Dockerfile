@@ -28,6 +28,11 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' 
 # 安装常用工具
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
   apt update && apt install -y cron vim trash-cli openssh-server && \
+  # nvm 安装 nodejs
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && \
+  nvm install 16.18.1 && \
+  # npm 工具
+  npm install --global pnpm && \
   # 配置 openssh，这里需要固化 ssh server 的密钥
   mkdir -p /var/run/sshd && \
   echo "PasswordAuthentication no" >> /etc/ssh/sshd_config && \
@@ -42,7 +47,7 @@ RUN git clone https://github.com/ohmyzsh/ohmyzsh.git /usr/share/oh-my-zsh && \
 
 # 安装依赖工具
 COPY ./install-tools.sh /opt/scripts/
-RUN bash /opt/scripts/install-tools.sh 
+RUN bash /opt/scripts/install-tools.sh
 
 # 添加start脚本
 COPY ./start.sh /opt/

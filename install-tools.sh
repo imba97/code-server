@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -eux
+set -eux
 
 TARGET_PATH=/usr/local/bin
 TEMP_DIR=$(mktemp -d)
@@ -15,14 +15,6 @@ mkdir ${TEMP_DIR}/npc
 curl -#fSLo ${TEMP_DIR}/npc/linux_${TARGETARCH}_client.tar.gz https://github.com/ehang-io/nps/releases/download/${NPS_VERSION}/linux_${TARGETARCH}_client.tar.gz
 tar -zxf ${TEMP_DIR}/npc/linux_${TARGETARCH}_client.tar.gz -C ${TEMP_DIR}/npc
 ${TEMP_DIR}/npc/npc install
-
-# nvm、nodejs
-mkdir ${TEMP_DIR}/nvm
-curl -#fSLo ${TEMP_DIR}/nvm/install.sh https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh
-bash ${TEMP_DIR}/nvm/install.sh
-nvm install 16.18.1
-# npm 工具
-npm install --global pnpm
 
 # 安装 docker 客户端
 if [ ${TARGETARCH} = "amd64" ]; then
