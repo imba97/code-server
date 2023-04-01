@@ -33,6 +33,11 @@ if [ ! -d ${HOME}/.autojump ]; then
     cp -rf /tmp/autojump ${HOME}/.autojump
 fi
 
+# 安装 nvm
+if [ ! -d ${HOME}/.nvm ]; then
+    git clone https://github.com/nvm-sh/nvm.git ${HOME}/.nvm
+fi
+
 # 自定义环境变量
 cat >${HOME}/.zshrc <<-EOF
 # oh-my-zsh
@@ -55,9 +60,9 @@ export HIST_STAMPS="yyyy-mm-dd"
 export VISUAL=vim
 export EDITOR="\$VISUAL"
 
-# nvm
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # load user zshrc
 [ -f ${HOME}/.zshrc.user ] && source ${HOME}/.zshrc.user
