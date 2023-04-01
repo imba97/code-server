@@ -1,0 +1,29 @@
+version: "3"
+services:
+  code-server:
+    # sysctl.conf: fs.inotify.max_user_watches = 524288
+    image: imba97/code-server:master
+    container_name: code-server
+    hostname: code-server
+    environment:
+      # custom http proxy [optional]
+      - HTTP_PROXY_ADDR=127.0.0.1:7890
+      # code-server password [required]
+      - PASSWORD=
+    volumes:
+      - code-server:/home/coder
+    # optional
+    ports:
+      # ssh port for vscode remote ssh
+      - 1022:22/tcp
+      - 8080:8080/tcp
+    restart: unless-stopped
+    networks:
+      - general
+
+volumes:
+  code-server:
+
+
+networks:
+  general:
