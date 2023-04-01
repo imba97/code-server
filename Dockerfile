@@ -7,7 +7,7 @@ EXPOSE 8080 22
 
 VOLUME [ "/home/coder" ]
 
-ARG TARGETARCH="amd64"
+ARG TARGETARCH="arm64"
 
 # code-server 登录密码
 ARG PASSWORD
