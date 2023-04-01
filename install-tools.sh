@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+# set -eux
 
 TARGET_PATH=/usr/local/bin
 TEMP_DIR=$(mktemp -d)
