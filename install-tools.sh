@@ -7,8 +7,6 @@ TEMP_DIR=$(mktemp -d)
 
 # https://github.com/ehang-io/nps/releases/latest
 NPS_VERSION="v0.26.10"
-# https://github.com/nvm-sh/nvm/releases/latest
-NVM_VERSION="v0.39.3"
 
 # nps 客户端
 mkdir ${TEMP_DIR}/npc

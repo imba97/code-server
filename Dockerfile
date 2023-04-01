@@ -30,6 +30,7 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
   apt update && apt install -y cron vim trash-cli openssh-server && \
   # nvm 安装 nodejs
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && \
+  source /home/coder/.zshrc && \
   nvm install 16.18.1 && \
   # npm 工具
   npm install --global pnpm && \
