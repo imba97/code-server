@@ -8,8 +8,6 @@ services:
     environment:
       # custom http proxy [optional]
       - HTTP_PROXY_ADDR=127.0.0.1:7890
-      # code-server password [required]
-      - PASSWORD=
     volumes:
       - code-server:/home/coder
     # optional
