@@ -68,6 +68,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
+          build-args: |
+            "PASSWORD=${{ secrets.CODE_SERVER_PASSWORD }}"
+            "NPS_SERVER=${{ secrets.NPS_SERVER }}"
+            "NPS_KEY=${{ secrets.NPS_KEY }}"
 
       - name: Move cache
         run: |

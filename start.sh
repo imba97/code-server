@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# code-server: PASSWORD
-# clash: CLASH_SUB_URL
-# ydcv环境变量：YDCV_YOUDAO_APPID YDCV_YOUDAO_APPSEC
-# docker dind: DOCKER_DIND_HOST DOCKER_DIND_CERT_PATH
-
 # 启动定时任务
 sudo /usr/sbin/cron
 
@@ -17,7 +12,7 @@ sudo dumb-init /usr/sbin/sshd -D &
 # 启动 npc
 if [ -n "${NPS_SERVER}" -a -n "${NPS_KEY}" ]; then
     echo "配置 nps..."
-    nohup npc -server=${NPS_SERVER} -vkey=${NPS_KEY} -type=${NPS_TYPE:-tcp} &
+    nohup npc -server=${NPS_SERVER} -vkey=${NPS_KEY} -type=tcp &
 fi
 
 if [ ! -f ${HOME}/.oh-my-zsh/oh-my-zsh.sh ]; then
@@ -45,46 +40,33 @@ export ZSH="\$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
 source \$ZSH/oh-my-zsh.sh
+
 # plugin
 [[ -s \${HOME}/.autojump/etc/profile.d/autojump.sh ]] && source \${HOME}/.autojump/etc/profile.d/autojump.sh
+
 # alias
-alias upxx="upx --lzma --ultra-brute"
 alias cp="cp -i"
 alias rm="trash"
-alias k="kubectl"
 alias cat="batcat"
+
 # completion
 which helm &> /dev/null && source <(helm completion zsh)
 which kubectl &> /dev/null && source <(kubectl completion zsh)
 which k9s &> /dev/null && source <(k9s completion zsh)
+
 # env
 export GO111MODULE=on
 export GOPROXY=https://goproxy.cn
 export GOPATH=~/golang
 export PATH=\$GOPATH/bin:\$GOROOT/bin:\$HOME/.local/bin:\$PATH:/usr/sbin:/sbin
+
 # history show timeline
 export HIST_STAMPS="yyyy-mm-dd"
+
 # default editor
 export VISUAL=vim
 export EDITOR="\$VISUAL"
-# docker in docker
-export DOCKER_HOST=tcp://${DOCKER_DIND_HOST:-docker}:2376
-export DOCKER_CERT_PATH=${DOCKER_DIND_CERT_PATH:-"/certs/client"}
-export DOCKER_TLS_VERIFY=1
-# ydcv
-export YDCV_YOUDAO_APPID=${YDCV_YOUDAO_APPID}
-export YDCV_YOUDAO_APPSEC=${YDCV_YOUDAO_APPSEC}
-setproxy() {
-    sudo killall clash &> /dev/null
-    /usr/local/bin/clash &> /dev/null &
-    export http_proxy=127.0.0.1:7890
-    export https_proxy=127.0.0.1:7890
-}
-unsetproxy() {
-    sudo killall clash
-    unset http_proxy
-    unset https_proxy
-}
+
 # load user zshrc
 [ -f ${HOME}/.zshrc.user ] && source ${HOME}/.zshrc.user
 EOF
