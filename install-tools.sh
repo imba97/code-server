@@ -7,12 +7,21 @@ TEMP_DIR=$(mktemp -d)
 
 # https://github.com/ehang-io/nps/releases/latest
 NPS_VERSION="v0.26.10"
+# https://github.com/nvm-sh/nvm/releases/latest
+NVM_VERSION="v0.39.3"
 
 # nps 客户端
 mkdir ${TEMP_DIR}/npc
 curl -#fSLo ${TEMP_DIR}/npc/linux_${TARGETARCH}_client.tar.gz https://github.com/ehang-io/nps/releases/download/${NPS_VERSION}/linux_${TARGETARCH}_client.tar.gz
 tar -zxf ${TEMP_DIR}/npc/linux_${TARGETARCH}_client.tar.gz -C ${TEMP_DIR}/npc
 ${TEMP_DIR}/npc/npc install
+
+# nvm、nodejs
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh | bash
+nvm install 16.18.1
+# npm 工具
+npm install --global pnpm
+
 # 安装 docker 客户端
 if [ ${TARGETARCH} = "amd64" ]; then
   DOCKER_ARCH=x86_64
