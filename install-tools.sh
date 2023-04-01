@@ -16,9 +16,6 @@ curl -#fSLo ${TEMP_DIR}/npc/linux_${TARGETARCH}_client.tar.gz https://github.com
 tar -zxf ${TEMP_DIR}/npc/linux_${TARGETARCH}_client.tar.gz -C ${TEMP_DIR}/npc
 ${TEMP_DIR}/npc/npc install
 
-# nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh | bash
-
 # 安装 docker 客户端
 if [ ${TARGETARCH} = "amd64" ]; then
   DOCKER_ARCH=x86_64

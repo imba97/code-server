@@ -33,12 +33,6 @@ if [ ! -d ${HOME}/.autojump ]; then
     cp -rf /tmp/autojump ${HOME}/.autojump
 fi
 
-# 安装 nodejs
-nvm install 16.18.1
-nvm use 16.18.1
-# npm 工具
-npm install --global pnpm
-
 # 自定义环境变量
 cat >${HOME}/.zshrc <<-EOF
 # oh-my-zsh
@@ -53,18 +47,6 @@ source \$ZSH/oh-my-zsh.sh
 # alias
 alias cp="cp -i"
 alias rm="trash"
-alias cat="batcat"
-
-# completion
-which helm &> /dev/null && source <(helm completion zsh)
-which kubectl &> /dev/null && source <(kubectl completion zsh)
-which k9s &> /dev/null && source <(k9s completion zsh)
-
-# env
-export GO111MODULE=on
-export GOPROXY=https://goproxy.cn
-export GOPATH=~/golang
-export PATH=\$GOPATH/bin:\$GOROOT/bin:\$HOME/.local/bin:\$PATH:/usr/sbin:/sbin
 
 # history show timeline
 export HIST_STAMPS="yyyy-mm-dd"
@@ -76,3 +58,13 @@ export EDITOR="\$VISUAL"
 # load user zshrc
 [ -f ${HOME}/.zshrc.user ] && source ${HOME}/.zshrc.user
 EOF
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh
+
+# 安装 nodejs
+if [ ! -d ${HOME}/.nvm ]; then
+    echo "安装 nodejs"
+    source ${HOME}/.zshrc
+    nvm install 16.18.1
+    nvm use 16.18.1
+fi
