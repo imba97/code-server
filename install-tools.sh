@@ -16,14 +16,8 @@ curl -#fSLo ${TEMP_DIR}/npc/linux_${TARGETARCH}_client.tar.gz https://github.com
 tar -zxf ${TEMP_DIR}/npc/linux_${TARGETARCH}_client.tar.gz -C ${TEMP_DIR}/npc
 ${TEMP_DIR}/npc/npc install
 
-# nvm、nodejs
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-bash ${TEMP_DIR}/nvm/install.sh
-source /home/coder/.zshrc
-nvm install 16.18.1
-nvm use 16.18.1
-# npm 工具
-npm install --global pnpm
+# nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh | bash
 
 # 安装 docker 客户端
 if [ ${TARGETARCH} = "amd64" ]; then

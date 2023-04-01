@@ -33,6 +33,12 @@ if [ ! -d ${HOME}/.autojump ]; then
     cp -rf /tmp/autojump ${HOME}/.autojump
 fi
 
+# 安装 nodejs
+nvm install 16.18.1
+nvm use 16.18.1
+# npm 工具
+npm install --global pnpm
+
 # 自定义环境变量
 cat >${HOME}/.zshrc <<-EOF
 # oh-my-zsh
