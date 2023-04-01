@@ -55,16 +55,10 @@ export HIST_STAMPS="yyyy-mm-dd"
 export VISUAL=vim
 export EDITOR="\$VISUAL"
 
+# nvm
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
 # load user zshrc
 [ -f ${HOME}/.zshrc.user ] && source ${HOME}/.zshrc.user
 EOF
-
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh
-
-# 安装 nodejs
-if [ ! -d ${HOME}/.nvm ]; then
-    echo "安装 nodejs"
-    source ${HOME}/.zshrc
-    nvm install 16.18.1
-    nvm use 16.18.1
-fi
