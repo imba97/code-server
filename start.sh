@@ -36,6 +36,8 @@ fi
 # 安装 nvm
 if [ ! -d ${HOME}/.nvm ]; then
     git clone https://github.com/nvm-sh/nvm.git ${HOME}/.nvm
+    cd ${HOME}/.nvm
+    git checkout v0.39.0
 fi
 
 # 自定义环境变量
@@ -61,8 +63,8 @@ export VISUAL=vim
 export EDITOR="\$VISUAL"
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+[ -s "\${NVM_DIR}/nvm.sh" ] && \. "\${NVM_DIR}/nvm.sh"
+[ -s "\${NVM_DIR}/bash_completion" ] && \. "\${NVM_DIR}/bash_completion"
 
 # load user zshrc
 [ -f ${HOME}/.zshrc.user ] && source ${HOME}/.zshrc.user
