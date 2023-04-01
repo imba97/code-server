@@ -17,7 +17,9 @@ tar -zxf ${TEMP_DIR}/npc/linux_${TARGETARCH}_client.tar.gz -C ${TEMP_DIR}/npc
 ${TEMP_DIR}/npc/npc install
 
 # nvm、nodejs
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh | bash
+mkdir ${TEMP_DIR}/nvm
+curl -#fSLo ${TEMP_DIR}/nvm/install.sh https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh
+bash ${TEMP_DIR}/nvm/install.sh
 nvm install 16.18.1
 # npm 工具
 npm install --global pnpm
