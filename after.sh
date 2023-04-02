@@ -20,7 +20,7 @@ done
 
 # 安装 nodejs
 
-source /home/coder/.zshrc
+source ${HOME}/.zshrc
 
 nvm install 16.20.0
 nvm use 16.20.0
