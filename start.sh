@@ -69,5 +69,3 @@ export NVM_DIR="$HOME/.nvm"
 # load user zshrc
 [ -f ${HOME}/.zshrc.user ] && source ${HOME}/.zshrc.user
 EOF
-
-source ${HOME}/.zshrc
