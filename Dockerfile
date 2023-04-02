@@ -47,12 +47,16 @@ RUN git clone https://github.com/ohmyzsh/ohmyzsh.git /usr/share/oh-my-zsh && \
 COPY ./install-tools.sh /opt/scripts/
 RUN bash /opt/scripts/install-tools.sh
 
-# 添加start脚本
+# 安装 vscode 插件
+COPY ./extension.sh /opt/scripts/
+RUN bash /opt/scripts/extension.sh
+
+# 添加 start 脚本
 COPY ./start.sh /opt/
 RUN chmod +x /opt/start.sh && sed -i '/^exec/i /opt/start.sh' /usr/bin/entrypoint.sh
 
-# 添加vscode插件
-COPY ./after.sh /opt/scripts/
-RUN bash /opt/scripts/after.sh
+# start 后脚本
+COPY ./after.sh /opt/
+RUN chmod +x /opt/after.sh && sed -i '/^exec/i /opt/after.sh' /usr/bin/entrypoint.sh
 
 USER coder
