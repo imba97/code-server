@@ -4,7 +4,7 @@
 
 exts=(
   # 中文
-  S-CEINTL.vscode-language-pack-zh-hans
+  MS-CEINTL.vscode-language-pack-zh-hans
   # Volar
   Vue.volar
   # 颜色选择器
@@ -19,6 +19,8 @@ do
 done
 
 # 安装 nodejs
+
+source $Home/.zshrc
 
 nvm install 16.20.0
 nvm use 16.20.0
