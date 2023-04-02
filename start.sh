@@ -36,8 +36,8 @@ fi
 # 安装 nvm
 if [ ! -d ${HOME}/.nvm ]; then
     git clone https://github.com/nvm-sh/nvm.git ${HOME}/.nvm
-    cd ${HOME}/.nvm
-    git checkout v0.39.0
+    cd "$NVM_DIR"
+    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
 fi
 
 # 自定义环境变量

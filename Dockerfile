@@ -52,6 +52,7 @@ COPY ./start.sh /opt/
 RUN chmod +x /opt/start.sh && sed -i '/^exec/i /opt/start.sh' /usr/bin/entrypoint.sh
 
 # 添加vscode插件
-COPY ./extensions /opt/extensions
+COPY ./after.sh /opt/scripts/
+RUN bash /opt/scripts/after.sh
 
 USER coder
