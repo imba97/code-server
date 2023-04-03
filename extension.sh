@@ -9,8 +9,10 @@ exts=(
   Vue.volar
   # 颜色选择器
   anseki.vscode-color
-  # js ts
+  # typescript
   ms-vscode.vscode-typescript-next
+  # Prettier
+  esbenp.prettier-vscode
 )
 
 for ext in ${exts[@]}

@@ -40,13 +40,28 @@ if [ ! -d ${HOME}/.nvm ]; then
     git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
 fi
 
+# vscode 配置
+cp /opt/code-config/settings.json ${HOME}/.local/share/code-server/User/settings.json
+# vscode 语言
+cp /opt/code-config/argv.json ${HOME}/.local/share/code-server/User/argv.json
+
 # 自定义环境变量
-cat >${HOME}/.zshrc <<-EOF
+cat > ${HOME}/.zshrc <<-EOF
 # oh-my-zsh
-export ZSH="\$HOME/.oh-my-zsh"
+ZSH=/usr/share/oh-my-zsh/
 ZSH_THEME="robbyrussell"
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+plugins=(git)
+ZSH_CACHE_DIR=\$HOME/.cache/oh-my-zsh
+if [[ ! -d \$ZSH_CACHE_DIR ]]; then
+  mkdir -p \$ZSH_CACHE_DIR
+fi
 source \$ZSH/oh-my-zsh.sh
+
+# code-server workspace
+export DEFAULT_WORKSPACE="\$HOME/workspace"
+if [[ ! -d \$DEFAULT_WORKSPACE ]]; then
+  mkdir -p \$DEFAULT_WORKSPACE
+fi
 
 # plugin
 [[ -s \${HOME}/.autojump/etc/profile.d/autojump.sh ]] && source \${HOME}/.autojump/etc/profile.d/autojump.sh
