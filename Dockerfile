@@ -55,13 +55,14 @@ RUN chmod +x /opt/start.sh && sed -i '/^exec/i /opt/start.sh' /usr/bin/entrypoin
 COPY ./after.sh /opt/
 RUN chmod +x /opt/after.sh && sed -i '/^exec/i /opt/after.sh' /usr/bin/entrypoint.sh
 
-USER coder
-
+# vscode 配置存放目录
 RUN mkdir /opt/code-config
 
 # vscode 配置
 COPY ./User/settings.json /opt/code-config/
 COPY ./User/argv.json /opt/code-config/
+
+USER coder
 
 # 安装 vscode 插件
 COPY ./extension.sh /opt/scripts/
