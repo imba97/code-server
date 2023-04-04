@@ -9,17 +9,8 @@ VOLUME [ "/home/coder" ]
 
 ARG TARGETARCH
 
-# code-server 登录密码
-ARG PASSWORD
-ENV PASSWORD ${PASSWORD}
-# NPS 服务器
-ARG NPS_SERVER
-ENV NPS_SERVER ${NPS_SERVER}
-# NPS Key
-ARG NPS_KEY
-ENV NPS_KEY ${NPS_KEY}
-
 ENV HOST="code-server"
+ENV DEFAULT_WORKSPACE="/home/coder/workspace"
 
 USER root
 
