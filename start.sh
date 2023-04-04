@@ -67,7 +67,10 @@ fi
 [[ -s \${HOME}/.autojump/etc/profile.d/autojump.sh ]] && source \${HOME}/.autojump/etc/profile.d/autojump.sh
 
 # alias
+alias ll="ls -l --color=auto"
+alias ls="ls --color=auto"
 alias cp="cp -i"
+alias mv="mv -i"
 alias rm="trash"
 
 # history show timeline
