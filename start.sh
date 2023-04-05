@@ -3,9 +3,6 @@
 # 启动定时任务
 sudo /usr/sbin/cron
 
-# code-server
-code-server
-
 # 配置启动 openssh server
 echo "n" | ssh-keygen -q -t rsa -b 2048 -f /home/coder/.ssh/ssh_host_rsa_key -N "" || true
 echo "n" | ssh-keygen -q -t ecdsa -f /home/coder/.ssh/ssh_host_ecdsa_key -N "" || true
