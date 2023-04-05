@@ -1,9 +1,9 @@
-# https://github.com/coder/code-server/releases/latest
-FROM codercom/code-server:4.11.0
+# https://hub.docker.com/r/linuxserver/code-server/tags
+FROM linuxserver/code-server:4.11.0
 
 LABEL MAINTAINER="mail@imba97.cn"
 
-EXPOSE 8080 22
+EXPOSE 8443 22
 
 VOLUME [ "/home/coder" ]
 
