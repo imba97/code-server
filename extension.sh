@@ -3,8 +3,8 @@
 # 安装 vscode 插件
 
 exts=(
-  # 中文
-  MS-CEINTL.vscode-language-pack-zh-hans
+  # 中文，各种方式配置语言包均不生效
+  # MS-CEINTL.vscode-language-pack-zh-hans
   # Volar
   Vue.volar
   # 颜色选择器
@@ -13,6 +13,8 @@ exts=(
   ms-vscode.vscode-typescript-next
   # Prettier
   esbenp.prettier-vscode
+  # GitLens
+  eamodio.gitlens
 )
 
 for ext in ${exts[@]}

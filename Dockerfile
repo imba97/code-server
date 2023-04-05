@@ -1,9 +1,9 @@
-# https://hub.docker.com/r/linuxserver/code-server/tags
-FROM linuxserver/code-server:4.11.0
+# https://github.com/coder/code-server/releases/latest
+FROM codercom/code-server:4.11.0
 
 LABEL MAINTAINER="mail@imba97.cn"
 
-EXPOSE 8443 22
+EXPOSE 8080 22
 
 VOLUME [ "/home/coder" ]
 
@@ -13,9 +13,6 @@ ENV HOST="code-server"
 ENV DEFAULT_WORKSPACE="/home/coder/workspace"
 
 USER root
-
-# 创建用户
-RUN useradd -m coder
 
 # 初始化配置
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone && \
@@ -54,7 +51,6 @@ RUN mkdir /opt/code-config
 
 # vscode 配置
 COPY ./User/settings.json /opt/code-config/
-COPY ./User/argv.json /opt/code-config
 
 USER coder
 

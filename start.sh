@@ -33,6 +33,12 @@ if [ ! -d ${HOME}/.autojump ]; then
     cp -rf /tmp/autojump ${HOME}/.autojump
 fi
 
+# 安装 zsh 主题
+if [ ! -f ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme ]; then
+    curl -sSL "https://github.com/zthxxx/jovial/raw/master/jovial.zsh-theme" -o ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
+    source ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
+fi
+
 # 安装 nvm
 if [ ! -d ${HOME}/.nvm ]; then
     git clone https://github.com/nvm-sh/nvm.git ${HOME}/.nvm
@@ -42,14 +48,12 @@ fi
 
 # vscode 配置
 cp /opt/code-config/settings.json ${HOME}/.local/share/code-server/User/settings.json
-# vscode 语言
-cp /opt/code-config/argv.json ${HOME}/.local/share/code-server/User/argv.json
 
 # 自定义环境变量
 cat > ${HOME}/.zshrc <<-EOF
 # oh-my-zsh
 ZSH=/usr/share/oh-my-zsh/
-ZSH_THEME="robbyrussell"
+ZSH_THEME="jovial"
 plugins=(git)
 ZSH_CACHE_DIR=\$HOME/.cache/oh-my-zsh
 if [[ ! -d \$ZSH_CACHE_DIR ]]; then
