@@ -3,6 +3,9 @@
 # 启动定时任务
 sudo /usr/sbin/cron
 
+# code-server
+code-server
+
 # 配置启动 openssh server
 echo "n" | ssh-keygen -q -t rsa -b 2048 -f /home/coder/.ssh/ssh_host_rsa_key -N "" || true
 echo "n" | ssh-keygen -q -t ecdsa -f /home/coder/.ssh/ssh_host_ecdsa_key -N "" || true
@@ -35,7 +38,8 @@ fi
 
 # 安装 zsh 主题
 if [ ! -f ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme ]; then
-    curl -sSL "https://github.com/zthxxx/jovial/raw/master/jovial.zsh-theme" -o ${HOME}/.oh-my-zsh/themes/jovial.zsh-theme
+    curl -sSL "https://github.com/zthxxx/jovial/raw/master/jovial.zsh-theme" -o ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
+    source ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
 fi
 
 # 安装 nvm
@@ -52,7 +56,7 @@ cp /opt/code-config/settings.json ${HOME}/.local/share/code-server/User/settings
 cat > ${HOME}/.zshrc <<-EOF
 # oh-my-zsh
 ZSH=/usr/share/oh-my-zsh/
-ZSH_THEME="jovial"
+ZSH_THEME=""
 plugins=(git)
 ZSH_CACHE_DIR=\$HOME/.cache/oh-my-zsh
 if [[ ! -d \$ZSH_CACHE_DIR ]]; then
