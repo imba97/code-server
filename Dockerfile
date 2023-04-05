@@ -10,7 +10,6 @@ VOLUME [ "/home/coder" ]
 ARG TARGETARCH
 
 ENV HOST="code-server"
-ENV DEFAULT_WORKSPACE="/home/coder/workspace"
 
 USER root
 
