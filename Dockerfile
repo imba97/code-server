@@ -5,7 +5,7 @@ LABEL MAINTAINER="mail@imba97.cn"
 
 EXPOSE 8080 22
 
-VOLUME [ "/home/coder/workspace" ]
+VOLUME [ "/home/coder" ]
 
 ARG TARGETARCH
 
@@ -21,7 +21,7 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' 
 
 # 安装常用工具
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-  apt update && apt install -y cron vim trash-cli openssh-server fontconfig xfonts-utils && \
+  apt update && apt install -y cron vim trash-cli openssh-server && \
   # 配置 openssh，这里需要固化 ssh server 的密钥
   mkdir -p /var/run/sshd && \
   echo "PasswordAuthentication no" >> /etc/ssh/sshd_config && \
@@ -51,13 +51,9 @@ RUN mkdir /opt/code-config
 
 # vscode 配置
 COPY ./User/settings.json /opt/code-config/
-COPY ./User/argv.json /opt/code-config/
+COPY ./User/argv.json /opt/code-config
 
 USER coder
-
-# 创建字体
-RUN mkdir -p /home/coder/.local/share/fonts
-COPY ./User/JetBrainsMonoNL-ExtraLight.ttf /home/coder/.local/share/fonts/
 
 # 安装 vscode 插件
 COPY ./extension.sh /opt/scripts/
