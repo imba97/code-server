@@ -36,7 +36,6 @@ fi
 # 安装 zsh 主题
 if [ ! -f ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme ]; then
     curl -sSL "https://github.com/zthxxx/jovial/raw/master/jovial.zsh-theme" -o ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
-    source ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
 fi
 
 # 安装 nvm
@@ -87,6 +86,9 @@ export EDITOR="\$VISUAL"
 export NVM_DIR="$HOME/.nvm"
 [ -s "\${NVM_DIR}/nvm.sh" ] && \. "\${NVM_DIR}/nvm.sh"
 [ -s "\${NVM_DIR}/bash_completion" ] && \. "\${NVM_DIR}/bash_completion"
+
+# zsh jovial 主题
+[ -f ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme ] && source ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
 
 # load user zshrc
 [ -f ${HOME}/.zshrc.user ] && source ${HOME}/.zshrc.user
