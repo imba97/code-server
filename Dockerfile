@@ -14,6 +14,8 @@ ENV DEFAULT_WORKSPACE="/home/coder/workspace"
 
 USER root
 
+RUN users
+
 # 初始化配置
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone && \
   # 修改用户默认 shell
