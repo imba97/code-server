@@ -20,7 +20,7 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' 
 
 # 安装常用工具
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-  apt update && apt install -y cron vim trash-cli openssh-server && \
+  apt update && apt install -y cron vim trash-cli openssh-server build-essential && \
   # 配置 openssh，这里需要固化 ssh server 的密钥
   mkdir -p /var/run/sshd && \
   echo "PasswordAuthentication no" >> /etc/ssh/sshd_config && \
@@ -43,7 +43,7 @@ RUN chmod +x /opt/start.sh && sed -i '/^exec/i /opt/start.sh' /usr/bin/entrypoin
 
 # start 后脚本
 COPY ./after.sh /opt/
-RUN chmod +x /opt/after.sh && sed -i '/^exec/i /opt/after.sh' /usr/bin/entrypoint.sh
+RUN chmod +x /opt/after.sh && sed -i '/^exec/i nohup /opt/after.sh' /usr/bin/entrypoint.sh
 
 # vscode 配置存放目录
 RUN mkdir /opt/code-config
