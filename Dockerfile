@@ -1,5 +1,5 @@
 # https://github.com/coder/code-server/releases/latest
-FROM codercom/code-server:4.11.0
+FROM codercom/code-server:latest
 
 LABEL MAINTAINER="mail@imba97.cn"
 
