@@ -35,7 +35,7 @@ fi
 
 # 安装 zsh 主题
 if [ ! -f ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme ]; then
-    curl -sSL "https://raw.githubusercontent.com/zthxxx/jovial/master/jovial.zsh-theme" -o ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
+    curl -sSL "https://github.com/zthxxx/jovial/raw/master/installer.sh" -o ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
 fi
 
 # 安装 nvm
