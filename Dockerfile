@@ -28,10 +28,6 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
   echo 'HostKey /home/coder/.ssh/ssh_host_ecdsa_key' >> /etc/ssh/sshd_config && \
   echo 'HostKey /home/coder/.ssh/ssh_host_ed25519_key' >> /etc/ssh/sshd_config
 
-# 安装oh-my-zsh
-COPY ./scripts/zsh-installer.sh /opt/scripts/
-RUN bash /opt/scripts/zsh-installer.sh
-
 # 安装依赖工具
 COPY ./scripts/install-tools.sh /opt/scripts/
 RUN bash /opt/scripts/install-tools.sh
@@ -51,6 +47,10 @@ RUN mkdir /opt/code-config
 COPY ./User/settings.json /opt/code-config/
 
 USER coder
+
+# 安装oh-my-zsh
+COPY ./scripts/zsh-installer.sh /opt/scripts/
+RUN bash /opt/scripts/zsh-installer.sh
 
 # 安装 vscode 插件
 COPY ./scripts/extension.sh /opt/scripts/
