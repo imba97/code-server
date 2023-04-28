@@ -29,20 +29,19 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
   echo 'HostKey /home/coder/.ssh/ssh_host_ed25519_key' >> /etc/ssh/sshd_config
 
 # 安装oh-my-zsh
-RUN git clone https://github.com/ohmyzsh/ohmyzsh.git /usr/share/oh-my-zsh && \
-  git clone https://github.com/zsh-users/zsh-autosuggestions /usr/share/zsh/plugins/zsh-autosuggestions && \
-  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git /usr/share/zsh/plugins/zsh-syntax-highlighting
+COPY ./scripts/zsh-installer.sh /opt/scripts/
+RUN bash /opt/scripts/zsh-installer.sh
 
 # 安装依赖工具
-COPY ./install-tools.sh /opt/scripts/
+COPY ./scripts/install-tools.sh /opt/scripts/
 RUN bash /opt/scripts/install-tools.sh
 
 # 添加 start 脚本
-COPY ./start.sh /opt/
+COPY ./scripts/start.sh /opt/
 RUN chmod +x /opt/start.sh && sed -i '/^exec/i /opt/start.sh' /usr/bin/entrypoint.sh
 
 # start 后脚本
-COPY ./after.sh /opt/
+COPY ./scripts/after.sh /opt/
 RUN chmod +x /opt/after.sh && sed -i '/^exec/i nohup /opt/after.sh' /usr/bin/entrypoint.sh
 
 # vscode 配置存放目录
@@ -54,5 +53,5 @@ COPY ./User/settings.json /opt/code-config/
 USER coder
 
 # 安装 vscode 插件
-COPY ./extension.sh /opt/scripts/
+COPY ./scripts/extension.sh /opt/scripts/
 RUN bash /opt/scripts/extension.sh

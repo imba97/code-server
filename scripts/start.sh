@@ -15,21 +15,6 @@ if [ -n "${NPS_SERVER}" -a -n "${NPS_KEY}" ]; then
     nohup npc -server=${NPS_SERVER} -vkey=${NPS_KEY} -type=tcp &
 fi
 
-if [ ! -f ${HOME}/.oh-my-zsh/oh-my-zsh.sh ]; then
-    echo "安装 oh-my-zsh ..."
-    rm -rf ${HOME}/.oh-my-zsh
-    # 安装 oh-my-zsh
-    echo 'y' | sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-fi
-
-# 安装 zsh 插件
-if [ ! -d ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-fi
-if [ ! -d ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-fi
-
 # 安装 nvm
 if [ ! -d ${HOME}/.nvm ]; then
     git clone https://github.com/nvm-sh/nvm.git ${HOME}/.nvm
@@ -58,9 +43,6 @@ if [[ ! -d \$DEFAULT_WORKSPACE ]]; then
   mkdir -p \$DEFAULT_WORKSPACE
 fi
 
-# plugin
-[[ -s \${HOME}/.autojump/etc/profile.d/autojump.sh ]] && source \${HOME}/.autojump/etc/profile.d/autojump.sh
-
 # alias
 alias ll="ls -l --color=auto"
 alias ls="ls --color=auto"
@@ -78,9 +60,6 @@ export EDITOR="\$VISUAL"
 export NVM_DIR="$HOME/.nvm"
 [ -s "\${NVM_DIR}/nvm.sh" ] && \. "\${NVM_DIR}/nvm.sh"
 [ -s "\${NVM_DIR}/bash_completion" ] && \. "\${NVM_DIR}/bash_completion"
-
-# zsh jovial 主题
-[ -f ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme ] && source ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
 
 # load user zshrc
 [ -f ${HOME}/.zshrc.user ] && source ${HOME}/.zshrc.user
