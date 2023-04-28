@@ -29,14 +29,6 @@ fi
 if [ ! -d ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions ]; then
     git clone https://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 fi
-if [ ! -d ${HOME}/.autojump ]; then
-    cp -rf /tmp/autojump ${HOME}/.autojump
-fi
-
-# 安装 zsh 主题
-if [ ! -f ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme ]; then
-    curl -sSL "https://github.com/zthxxx/jovial/raw/master/installer.sh" -o ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
-fi
 
 # 安装 nvm
 if [ ! -d ${HOME}/.nvm ]; then
