@@ -43,6 +43,9 @@ if [[ ! -d \$DEFAULT_WORKSPACE ]]; then
   mkdir -p \$DEFAULT_WORKSPACE
 fi
 
+# plugin
+[[ -s \${HOME}/.autojump/etc/profile.d/autojump.sh ]] && source \${HOME}/.autojump/etc/profile.d/autojump.sh
+
 # alias
 alias ll="ls -l --color=auto"
 alias ls="ls --color=auto"
@@ -60,6 +63,9 @@ export EDITOR="\$VISUAL"
 export NVM_DIR="$HOME/.nvm"
 [ -s "\${NVM_DIR}/nvm.sh" ] && \. "\${NVM_DIR}/nvm.sh"
 [ -s "\${NVM_DIR}/bash_completion" ] && \. "\${NVM_DIR}/bash_completion"
+
+# zsh jovial 主题
+[ -f ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme ] && source ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
 
 # load user zshrc
 [ -f ${HOME}/.zshrc.user ] && source ${HOME}/.zshrc.user
