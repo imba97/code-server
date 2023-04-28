@@ -9,6 +9,11 @@ echo "n" | ssh-keygen -q -t ecdsa -f /home/coder/.ssh/ssh_host_ecdsa_key -N "" |
 echo "n" | ssh-keygen -t dsa -f /home/coder/.ssh/ssh_host_ed25519_key -N "" || true
 sudo dumb-init /usr/sbin/sshd -D &
 
+# 安装 zsh 主题
+# if [ ! -f ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme ]; then
+#     curl -sSL "https://github.com/zthxxx/jovial/raw/master/jovial.zsh-theme" -o ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
+# fi
+
 # 启动 npc
 if [ -n "${NPS_SERVER}" -a -n "${NPS_KEY}" ]; then
     echo "配置 nps..."
