@@ -32,7 +32,7 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
 RUN git clone https://github.com/ohmyzsh/ohmyzsh.git /usr/share/oh-my-zsh && \
   git clone https://github.com/zsh-users/zsh-autosuggestions /usr/share/zsh/plugins/zsh-autosuggestions && \
   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git /usr/share/zsh/plugins/zsh-syntax-highlighting && \
-  curl -sSL "https://github.com/zthxxx/jovial/raw/master/jovial.zsh-theme" -o /usr/oh-my-zsh/themes/jovial.zsh-theme
+  curl -sSL https://github.com/zthxxx/jovial/raw/master/jovial.zsh-theme -o /usr/oh-my-zsh/themes/jovial.zsh-theme
 
 # 安装依赖工具
 COPY ./scripts/install-tools.sh /opt/scripts/
