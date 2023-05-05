@@ -37,7 +37,7 @@ cp /opt/code-config/settings.json ${HOME}/.local/share/code-server/User/settings
 cat > ${HOME}/.zshrc <<-EOF
 # oh-my-zsh
 ZSH=/usr/share/oh-my-zsh/
-ZSH_THEME=""
+ZSH_THEME="jovial"
 plugins=(git)
 ZSH_CACHE_DIR=\$HOME/.cache/oh-my-zsh
 if [[ ! -d \$ZSH_CACHE_DIR ]]; then
@@ -71,9 +71,6 @@ export EDITOR="\$VISUAL"
 export NVM_DIR="$HOME/.nvm"
 [ -s "\${NVM_DIR}/nvm.sh" ] && \. "\${NVM_DIR}/nvm.sh"
 [ -s "\${NVM_DIR}/bash_completion" ] && \. "\${NVM_DIR}/bash_completion"
-
-# zsh jovial 主题
-[ -f ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme ] && source ${HOME}/.oh-my-zsh/custom/themes/jovial.zsh-theme
 
 # load user zshrc
 [ -f ${HOME}/.zshrc.user ] && source ${HOME}/.zshrc.user
