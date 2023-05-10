@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source ${HOME}/.zshrc
-
 # 只执行一次
 
 LOCK_FILE=after.lock
@@ -11,6 +9,8 @@ if [ -f ${LOCK_FILE} ]; then
     echo "An instance of this script is already running"
     exit 1
 fi
+
+source ${HOME}/.zshrc
 
 # 安装 nodejs
 nvm install 16.14.0
