@@ -4,10 +4,10 @@
 sudo /usr/sbin/cron
 
 # 配置启动 openssh server
-echo "n" | ssh-keygen -q -t rsa -b 2048 -f /home/coder/.ssh/ssh_host_rsa_key -N "" || true
-echo "n" | ssh-keygen -q -t ecdsa -f /home/coder/.ssh/ssh_host_ecdsa_key -N "" || true
-echo "n" | ssh-keygen -t dsa -f /home/coder/.ssh/ssh_host_ed25519_key -N "" || true
-sudo dumb-init /usr/sbin/sshd -D &
+# echo "n" | ssh-keygen -q -t rsa -b 2048 -f /home/coder/.ssh/ssh_host_rsa_key -N "" || true
+# echo "n" | ssh-keygen -q -t ecdsa -f /home/coder/.ssh/ssh_host_ecdsa_key -N "" || true
+# echo "n" | ssh-keygen -t dsa -f /home/coder/.ssh/ssh_host_ed25519_key -N "" || true
+# sudo dumb-init /usr/sbin/sshd -D &
 
 # 安装 zsh
 if [ ! -f ${HOME}/.oh-my-zsh/oh-my-zsh.sh ]; then

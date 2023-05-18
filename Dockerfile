@@ -22,11 +22,11 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' 
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
   apt update && apt install -y cron vim trash-cli openssh-server build-essential && \
   # 配置 openssh，这里需要固化 ssh server 的密钥
-  mkdir -p /var/run/sshd && \
-  echo "PasswordAuthentication no" >> /etc/ssh/sshd_config && \
-  echo 'HostKey /home/coder/.ssh/ssh_host_rsa_key' >> /etc/ssh/sshd_config && \
-  echo 'HostKey /home/coder/.ssh/ssh_host_ecdsa_key' >> /etc/ssh/sshd_config && \
-  echo 'HostKey /home/coder/.ssh/ssh_host_ed25519_key' >> /etc/ssh/sshd_config
+  # mkdir -p /var/run/sshd && \
+  # echo "PasswordAuthentication no" >> /etc/ssh/sshd_config && \
+  # echo 'HostKey /home/coder/.ssh/ssh_host_rsa_key' >> /etc/ssh/sshd_config && \
+  # echo 'HostKey /home/coder/.ssh/ssh_host_ecdsa_key' >> /etc/ssh/sshd_config && \
+  # echo 'HostKey /home/coder/.ssh/ssh_host_ed25519_key' >> /etc/ssh/sshd_config
 
 # 安装oh-my-zsh
 RUN git clone https://github.com/ohmyzsh/ohmyzsh.git /usr/share/oh-my-zsh && \
