@@ -18,10 +18,10 @@ if [ ! -f ${HOME}/.oh-my-zsh/oh-my-zsh.sh ]; then
 fi
 
 # 启动 npc
-if [ -n "${NPS_SERVER}" -a -n "${NPS_KEY}" ]; then
-    echo "配置 nps..."
-    nohup npc -server=${NPS_SERVER} -vkey=${NPS_KEY} -type=tcp &
-fi
+# if [ -n "${NPS_SERVER}" -a -n "${NPS_KEY}" ]; then
+#     echo "配置 nps..."
+#     nohup npc -server=${NPS_SERVER} -vkey=${NPS_KEY} -type=tcp &
+# fi
 
 # 安装 nvm
 if [ ! -d ${HOME}/.nvm ]; then
