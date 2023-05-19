@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 启动定时任务
-sudo /usr/sbin/cron
+sudo dumb-init /usr/sbin/crond
 
 # 配置启动 openssh server
 # echo "n" | ssh-keygen -q -t rsa -b 2048 -f /home/coder/.ssh/ssh_host_rsa_key -N "" || true
@@ -9,19 +9,11 @@ sudo /usr/sbin/cron
 # echo "n" | ssh-keygen -t dsa -f /home/coder/.ssh/ssh_host_ed25519_key -N "" || true
 # sudo dumb-init /usr/sbin/sshd -D &
 
-# 安装 zsh
-if [ ! -f ${HOME}/.oh-my-zsh/oh-my-zsh.sh ]; then
-    echo "安装 oh-my-zsh ..."
-    rm -rf ${HOME}/.oh-my-zsh
-    # 安装 oh-my-zsh
-    echo 'y' | sh -c /usr/share/oh-my-zsh/tools/install.sh
-fi
-
 # 启动 npc
-# if [ -n "${NPS_SERVER}" -a -n "${NPS_KEY}" ]; then
-#     echo "配置 nps..."
-#     nohup npc -server=${NPS_SERVER} -vkey=${NPS_KEY} -type=tcp &
-# fi
+if [ -n "${NPS_SERVER}" -a -n "${NPS_KEY}" ]; then
+    echo "配置 nps..."
+    nohup npc -server=${NPS_SERVER} -vkey=${NPS_KEY} -type=tcp &
+fi
 
 # 安装 nvm
 if [ ! -d ${HOME}/.nvm ]; then
@@ -52,7 +44,9 @@ if [[ ! -d \$DEFAULT_WORKSPACE ]]; then
 fi
 
 # plugin
-[[ -s \${HOME}/.autojump/etc/profile.d/autojump.sh ]] && source \${HOME}/.autojump/etc/profile.d/autojump.sh
+[[ -s /etc/profile.d/autojump.zsh ]] && source /etc/profile.d/autojump.zsh
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # alias
 alias ll="ls -l --color=auto"
