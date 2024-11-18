@@ -1,7 +1,7 @@
 version: "3"
 services:
   code-server:
-    image: imba97/code-server:master
+    image: imba97/code-server:latest
     container_name: code-server
     hostname: code-server
     environment:
