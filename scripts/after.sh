@@ -8,14 +8,14 @@ if [ ! -f ${LOCK_FILE} ]; then
     # source ${HOME}/.zshrc
 
     # 安装 nodejs
-    nvm install 16.14.0
-    nvm use 16.14.0
+    nvm install 20.8.1
+    nvm use 20.8.1
 
     # 设置镜像源
-    npm config set registry https://registry.npm.taobao.org
+    npm config set registry https://registry.npmmirror.com/
 
     # 安装 npm 包
-    npm i -g yarn pnpm @vue/cli
+    npm i -g yarn pnpm
 
     echo "Locked" > ${LOCK_FILE}
 fi
