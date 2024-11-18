@@ -1,7 +1,9 @@
 name: docker-publish
+
 on:
   push:
-    branches: [master]
+    tags:
+      - 'v*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
