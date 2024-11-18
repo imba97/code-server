@@ -24,11 +24,11 @@ jobs:
       - name: Build and tag Docker image
         run: |
           TAG_NAME=$(echo $GITHUB_REF | sed 's/refs\/tags\///')
-          docker build . -t ${{ secrets.DOCKER_USERNAME }}/introxd:latest
-          docker tag ${{ secrets.DOCKER_USERNAME }}/introxd:latest ${{ secrets.DOCKER_USERNAME }}/introxd:$TAG_NAME
+          docker build . -t ${{ secrets.DOCKER_USERNAME }}/code-server:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/code-server:latest ${{ secrets.DOCKER_USERNAME }}/code-server:$TAG_NAME
 
       - name: Push Docker image to Docker Hub
         run: |
           TAG_NAME=$(echo $GITHUB_REF | sed 's/refs\/tags\///')
-          docker push ${{ secrets.DOCKER_USERNAME }}/introxd:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/introxd:$TAG_NAME
+          docker push ${{ secrets.DOCKER_USERNAME }}/code-server:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/code-server:$TAG_NAME
