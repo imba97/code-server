@@ -1,0 +1,14 @@
+{
+  "name": "code-server",
+  "version": "1.0.0",
+  "description": "code-server",
+  "author": "imba97",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "release": "bumpp"
+  },
+  "devDependencies": {
+    "bumpp": "^9.8.1"
+  }
+}
