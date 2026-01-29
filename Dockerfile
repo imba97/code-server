@@ -14,47 +14,54 @@ ENV HOST="code-server"
 USER root
 
 # 初始化配置
-RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone && \
-  # 修改用户默认 shell
-  usermod -s /bin/zsh coder
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone
+RUN usermod -s /bin/zsh coder
 
-# 安装常用工具
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-  apt update && apt install -y cron vim trash-cli build-essential
-  # 配置 openssh，这里需要固化 ssh server 的密钥
-  # mkdir -p /var/run/sshd && \
-  # echo "PasswordAuthentication no" >> /etc/ssh/sshd_config && \
-  # echo 'HostKey /home/coder/.ssh/ssh_host_rsa_key' >> /etc/ssh/sshd_config && \
-  # echo 'HostKey /home/coder/.ssh/ssh_host_ecdsa_key' >> /etc/ssh/sshd_config && \
-  # echo 'HostKey /home/coder/.ssh/ssh_host_ed25519_key' >> /etc/ssh/sshd_config
+# 安装 cron 和 xz (Nix 需要 xz 解压)
+RUN apt update
+RUN apt install -y cron xz-utils ca-certificates curl
 
-# 安装oh-my-zsh
-RUN git clone https://github.com/ohmyzsh/ohmyzsh.git /usr/share/oh-my-zsh && \
-  git clone https://github.com/zsh-users/zsh-autosuggestions /usr/share/zsh/plugins/zsh-autosuggestions && \
-  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git /usr/share/zsh/plugins/zsh-syntax-highlighting
+# 切换到 coder 用户安装 Nix
+USER coder
+RUN bash -c "curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh -s -- --no-daemon --no-modify-profile"
 
-RUN curl -sSL https://github.com/zthxxx/jovial/raw/master/jovial.zsh-theme -o /usr/share/oh-my-zsh/themes/jovial.zsh-theme
+# 复制 nix 配置目录
+USER root
+COPY ./nix /tmp/nix
+RUN chown -R coder:coder /tmp/nix
 
-# 安装依赖工具
-COPY ./scripts/install-tools.sh /opt/scripts/
-RUN bash /opt/scripts/install-tools.sh
+# 构建 Nix 环境
+USER coder
+RUN bash -c ". /home/coder/.nix-profile/etc/profile.d/nix.sh && cd /tmp/nix && nix --extra-experimental-features 'nix-command flakes' build .#default"
+
+# 安装构建结果
+USER root
+# 备份 nix.sh
+RUN cp /home/coder/.nix-profile/etc/profile.d/nix.sh /tmp/nix.sh
+RUN rm -rf /home/coder/.nix-profile/*
+RUN cp -r /tmp/nix/result/* /home/coder/.nix-profile/
+RUN cp /tmp/nix/result/etc/zshrc /home/coder/.zshrc
+# 恢复 nix.sh
+RUN mkdir -p /home/coder/.nix-profile/etc/profile.d
+RUN cp /tmp/nix.sh /home/coder/.nix-profile/etc/profile.d/nix.sh
+RUN mkdir -p /opt/code-config
+COPY ./User/settings.json /opt/code-config/
+RUN chown -R coder:coder /home/coder/.nix-profile /home/coder/.zshrc /opt/code-config
+USER coder
+
+# 安装 VSCode 扩展 (从 Nix 生成的列表)
+RUN bash -c ". ~/.nix-profile/etc/profile.d/nix.sh && while read ext; do code-server --install-extension \"$ext\" || true; done < ~/.nix-profile/etc/vscode-extensions.txt"
+USER root
+RUN rm /home/coder/.nix-profile/etc/vscode-extensions.txt
+USER coder
+
+# 清理临时文件
+USER root
+RUN rm -rf /tmp/nix /tmp/result*
 
 # 添加 start 脚本
 COPY ./scripts/start.sh /opt/
-RUN chmod +x /opt/start.sh && sed -i '/^exec/i /opt/start.sh' /usr/bin/entrypoint.sh
-
-# start 后脚本
-COPY ./scripts/after.sh /opt/
-RUN chmod +x /opt/after.sh && sed -i '/^exec/i nohup /opt/after.sh' /usr/bin/entrypoint.sh
-
-# vscode 配置存放目录
-RUN mkdir /opt/code-config
-
-# vscode 配置
-COPY ./User/settings.json /opt/code-config/
+RUN chmod +x /opt/start.sh
+RUN sed -i '/^exec/i /opt/start.sh' /usr/bin/entrypoint.sh
 
 USER coder
-
-# 安装 vscode 插件
-COPY ./scripts/extension.sh /opt/scripts/
-RUN bash /opt/scripts/extension.sh

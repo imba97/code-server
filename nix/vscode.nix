@@ -1,8 +1,6 @@
-#!/bin/bash
-
-# 安装 vscode 插件
-
-exts=(
+# VSCode 扩展列表
+{ pkgs }:
+pkgs.writeText "vscode-extensions.txt" ''
   MS-CEINTL.vscode-language-pack-zh-hans
   Vue.volar
   anseki.vscode-color
@@ -16,9 +14,4 @@ exts=(
   antfu.iconify
   antfu.icons-carbon
   antfu.theme-vitesse
-)
-
-for ext in ${exts[@]}
-do
-  code-server --install-extension $ext
-done
+''
