@@ -14,7 +14,6 @@
     devPackages = import ./packages.nix;
     systemPackages = import ./system.nix;
     ohMyZshPackages = import ./oh-my-zsh.nix;
-    zshConfig = import ./zsh.nix;
     vscodeExtensions = import ./vscode.nix;
 
   in {
@@ -37,10 +36,11 @@
         postBuild = ''
           # 添加配置文件
           mkdir -p $out/etc
-          ln -s ${zshConfig {
-            inherit pkgs oh-my-zsh zsh-autosuggestions zsh-syntax-highlighting;
-          }} $out/etc/zshrc
           ln -s ${vscodeExtensions { inherit pkgs; }} $out/etc/vscode-extensions.txt
+          # 输出路径供 Dockerfile 使用
+          echo ${oh-my-zsh} > $out/etc/oh-my-zsh.path
+          echo ${zsh-autosuggestions} > $out/etc/zsh-autosuggestions.path
+          echo ${zsh-syntax-highlighting} > $out/etc/zsh-syntax-highlighting.path
         '';
       };
     in {

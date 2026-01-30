@@ -1,4 +1,4 @@
-# Oh-my-zsh 及插件
+# Oh-my-zsh 和插件
 { pkgs }:
 with pkgs;
 [

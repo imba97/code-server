@@ -40,10 +40,43 @@ USER root
 RUN cp /home/coder/.nix-profile/etc/profile.d/nix.sh /tmp/nix.sh
 RUN rm -rf /home/coder/.nix-profile/*
 RUN cp -r /tmp/nix/result/* /home/coder/.nix-profile/
-RUN cp /tmp/nix/result/etc/zshrc /home/coder/.zshrc
 # 恢复 nix.sh
 RUN mkdir -p /home/coder/.nix-profile/etc/profile.d
 RUN cp /tmp/nix.sh /home/coder/.nix-profile/etc/profile.d/nix.sh
+
+# 生成 .zshrc (直接使用 .nix-profile/share 路径，不使用 nix store 路径)
+RUN mkdir -p /home/coder/.oh-my-zsh/custom/themes && \
+    /home/coder/.nix-profile/bin/git clone https://github.com/denysdovhan/spaceship-prompt.git /home/coder/.oh-my-zsh/custom/themes/spaceship-prompt --depth=1 && \
+    ln -s /home/coder/.oh-my-zsh/custom/themes/spaceship-prompt/spaceship.zsh-theme /home/coder/.oh-my-zsh/custom/themes/spaceship.zsh-theme && \
+    echo "ZSH=/home/coder/.nix-profile/share/oh-my-zsh" > /home/coder/.zshrc && \
+    echo "ZSH_CUSTOM=/home/coder/.oh-my-zsh/custom" >> /home/coder/.zshrc && \
+    echo "ZSH_THEME=\"spaceship\"" >> /home/coder/.zshrc && \
+    echo "plugins=(git)" >> /home/coder/.zshrc && \
+    echo "ZSH_CACHE_DIR=\$HOME/.cache/oh-my-zsh" >> /home/coder/.zshrc && \
+    echo "if [[ ! -d \$ZSH_CACHE_DIR ]]; then" >> /home/coder/.zshrc && \
+    echo "  mkdir -p \$ZSH_CACHE_DIR" >> /home/coder/.zshrc && \
+    echo "fi" >> /home/coder/.zshrc && \
+    echo "source \$ZSH/oh-my-zsh.sh" >> /home/coder/.zshrc && \
+    echo "" >> /home/coder/.zshrc && \
+    echo "export DEFAULT_WORKSPACE=\"\$HOME/workspace\"" >> /home/coder/.zshrc && \
+    echo "if [[ ! -d \$DEFAULT_WORKSPACE ]]; then" >> /home/coder/.zshrc && \
+    echo "  mkdir -p \$DEFAULT_WORKSPACE" >> /home/coder/.zshrc && \
+    echo "fi" >> /home/coder/.zshrc && \
+    echo "" >> /home/coder/.zshrc && \
+    echo "source /home/coder/.nix-profile/share/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /home/coder/.zshrc && \
+    echo "source /home/coder/.nix-profile/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> /home/coder/.zshrc && \
+    echo "" >> /home/coder/.zshrc && \
+    echo "alias ll=\"ls -l --color=auto\"" >> /home/coder/.zshrc && \
+    echo "alias ls=\"ls --color=auto\"" >> /home/coder/.zshrc && \
+    echo "alias cp=\"cp -i\"" >> /home/coder/.zshrc && \
+    echo "alias mv=\"mv -i\"" >> /home/coder/.zshrc && \
+    echo "alias rm=\"trash\"" >> /home/coder/.zshrc && \
+    echo "export HIST_STAMPS=\"yyyy-mm-dd\"" >> /home/coder/.zshrc && \
+    echo "export VISUAL=vim" >> /home/coder/.zshrc && \
+    echo "export EDITOR=\"\$VISUAL\"" >> /home/coder/.zshrc && \
+    echo "[ -f ~/.nix-profile/etc/profile.d/nix.sh ] && source ~/.nix-profile/etc/profile.d/nix.sh || true" >> /home/coder/.zshrc && \
+    echo "[ -f \$HOME/.zshrc.user ] && source \$HOME/.zshrc.user" >> /home/coder/.zshrc
+
 RUN mkdir -p /opt/code-config
 COPY ./User/settings.json /opt/code-config/
 RUN chown -R coder:coder /home/coder/.nix-profile /home/coder/.zshrc /opt/code-config
