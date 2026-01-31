@@ -15,6 +15,7 @@
     systemPackages = import ./system.nix;
     ohMyZshPackages = import ./oh-my-zsh.nix;
     vscodeExtensions = import ./vscode.nix;
+    zshrcConfig = import ./zshrc.nix;
 
   in {
     packages = forAllSystems (system: pkgs: let
@@ -29,6 +30,11 @@
                    ++ (systemPackages { inherit pkgs; })
                    ++ ohMyZsh;
 
+      # 生成 .zshrc 配置文件
+      zshConfig = (zshrcConfig {
+        inherit pkgs oh-my-zsh zsh-autosuggestions zsh-syntax-highlighting;
+      }).zshConfig;
+
       # 创建包含配置的环境包
       envPackage = pkgs.symlinkJoin {
         name = "code-server-env";
@@ -37,10 +43,7 @@
           # 添加配置文件
           mkdir -p $out/etc
           ln -s ${vscodeExtensions { inherit pkgs; }} $out/etc/vscode-extensions.txt
-          # 输出路径供 Dockerfile 使用
-          echo ${oh-my-zsh} > $out/etc/oh-my-zsh.path
-          echo ${zsh-autosuggestions} > $out/etc/zsh-autosuggestions.path
-          echo ${zsh-syntax-highlighting} > $out/etc/zsh-syntax-highlighting.path
+          ln -s ${zshConfig} $out/etc/.zshrc
         '';
       };
     in {
