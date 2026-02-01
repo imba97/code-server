@@ -38,7 +38,6 @@ echo [5/5] Starting new container...
 docker run -d ^
   --name %CONTAINER_NAME% ^
   -p 8080:8080 ^
-  -p 22:22 ^
   -v %VOLUME_NAME%:/home/coder ^
   -e PASSWORD=123 ^
   %IMAGE_NAME%
@@ -54,7 +53,6 @@ echo  Build and Start Complete!
 echo ========================================
 echo.
 echo Access code-server at: http://localhost:8080
-echo SSH access: ssh -p 22 coder@localhost
 echo.
 
 pause
