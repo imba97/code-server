@@ -26,6 +26,7 @@ echo     Done.
 echo.
 
 echo [4/5] Building new image...
+set DOCKER_BUILDKIT=1
 docker build -t %IMAGE_NAME% .
 if errorlevel 1 (
     echo     Build FAILED!

@@ -27,11 +27,15 @@ RUN bash -c "curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | 
 # 复制 nix 配置目录
 USER root
 COPY ./nix /tmp/nix
+RUN mkdir -p /home/coder/.config/nix && \
+    cp /tmp/nix/nix.conf /home/coder/.config/nix/nix.conf && \
+    chown -R coder:coder /tmp/nix /home/coder/.config/nix
 RUN chown -R coder:coder /tmp/nix
 
-# 构建 Nix 环境
+# 构建 Nix 环境 (使用 BuildKit 缓存加速)
 USER coder
-RUN bash -c ". /home/coder/.nix-profile/etc/profile.d/nix.sh && cd /tmp/nix && nix --extra-experimental-features 'nix-command flakes' build .#default"
+RUN --mount=type=cache,target=/home/coder/.cache/nix,uid=1000,gid=1000 \
+    bash -c ". /home/coder/.nix-profile/etc/profile.d/nix.sh && cd /tmp/nix && nix --extra-experimental-features 'nix-command flakes' build .#default"
 
 # 安装构建结果
 USER root
