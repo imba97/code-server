@@ -14,7 +14,6 @@
     devPackages = import ./packages.nix;
     systemPackages = import ./system.nix;
     ohMyZshPackages = import ./oh-my-zsh.nix;
-    vscodeExtensions = import ./vscode.nix;
     zshrcConfig = import ./zshrc.nix;
 
   in {
@@ -42,7 +41,6 @@
         postBuild = ''
           # 添加配置文件
           mkdir -p $out/etc
-          ln -s ${vscodeExtensions { inherit pkgs; }} $out/etc/vscode-extensions.txt
           ln -s ${zshConfig} $out/etc/.zshrc
         '';
       };

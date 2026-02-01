@@ -10,6 +10,8 @@ VOLUME [ "/home/coder" ]
 ARG TARGETARCH
 
 ENV HOST="code-server"
+# 默认工作目录
+ENV DEFAULT_WORKSPACE="/home/coder/workspace"
 
 USER root
 
@@ -30,7 +32,6 @@ COPY ./nix /tmp/nix
 RUN mkdir -p /home/coder/.config/nix && \
     cp /tmp/nix/nix.conf /home/coder/.config/nix/nix.conf && \
     chown -R coder:coder /tmp/nix /home/coder/.config/nix
-RUN chown -R coder:coder /tmp/nix
 
 # 构建 Nix 环境 (使用 BuildKit 缓存加速)
 USER coder
@@ -56,15 +57,17 @@ RUN cp /home/coder/.nix-profile/etc/.zshrc /home/coder/.zshrc && \
 COPY ./User/settings.json /opt/code-config/
 RUN chown -R coder:coder /home/coder/.nix-profile /home/coder/.zshrc /opt/code-config
 
-# 安装 VSCode 扩展 (从 Nix 生成的列表)
-USER coder
-RUN bash -c ". ~/.nix-profile/etc/profile.d/nix.sh && \
-    while read ext; do code-server --install-extension \"$ext\" || true; done < ~/.nix-profile/etc/vscode-extensions.txt && \
-    rm ~/.nix-profile/etc/vscode-extensions.txt"
+# 复制 VSCode 扩展文件（启动时安装）
+# 将 VSIX 文件复制到 /opt/extensions，由 start.sh 在首次启动时安装
+COPY ./extensions /opt/extensions
+RUN mkdir -p /opt/extensions && \
+    chown -R coder:coder /opt/extensions
 
 # 清理临时文件
 USER root
-RUN rm -rf /tmp/nix /tmp/result* /tmp/nix.sh
+RUN rm -rf /tmp/nix /tmp/result* /tmp/nix.sh && \
+    mkdir -p /home/coder/.config/code-server && \
+    chown -R coder:coder /home/coder/.config
 
 # 添加 start 脚本
 COPY ./scripts/start.sh /opt/
