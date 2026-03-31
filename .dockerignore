@@ -6,4 +6,5 @@ node_modules
 rebuild.bat
 .env*
 result*
+.cache
 

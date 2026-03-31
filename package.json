@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "release": "bumpp",
-    "update-extensions": "esno scripts/update-extensions.ts"
+    "install-extensions": "esno scripts/install-extensions.ts"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

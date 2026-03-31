@@ -1,4 +1,16 @@
 # https://github.com/coder/code-server/releases/latest
+FROM node:22-bookworm-slim AS extensions-downloader
+
+WORKDIR /workspace
+
+COPY ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./tsconfig.json ./
+COPY ./scripts/install-extensions.ts ./scripts/install-extensions.ts
+
+RUN corepack enable && \
+    pnpm install --frozen-lockfile
+
+RUN EXTENSIONS_DIR=/tmp/extensions pnpm run install-extensions
+
 FROM codercom/code-server:latest
 
 LABEL MAINTAINER="mail@imba97.cn"
@@ -57,9 +69,8 @@ RUN cp /home/coder/.nix-profile/etc/.zshrc /home/coder/.zshrc && \
 COPY ./User/settings.json /opt/code-config/
 RUN chown -R coder:coder /home/coder/.nix-profile /home/coder/.zshrc /opt/code-config
 
-# 复制 VSCode 扩展文件（启动时安装）
-# 将 VSIX 文件复制到 /opt/extensions，由 start.sh 在首次启动时安装
-COPY ./extensions /opt/extensions
+# 复制构建阶段下载的 VSCode 扩展文件（启动时安装）
+COPY --from=extensions-downloader /tmp/extensions /opt/extensions
 RUN mkdir -p /opt/extensions && \
     chown -R coder:coder /opt/extensions
 

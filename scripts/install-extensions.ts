@@ -1,7 +1,7 @@
 import { mkdir, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-const EXTENSIONS_DIR = path.resolve(process.cwd(), 'extensions')
+const EXTENSIONS_DIR = path.resolve(process.cwd(), process.env.EXTENSIONS_DIR || path.join('.cache', 'extensions'))
 const MARKETPLACE_API_URL = 'https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery?api-version=3.0-preview.1'
 const MARKETPLACE_QUERY_FLAGS = 103
 
@@ -253,6 +253,8 @@ function logManagedExtensionDrift(localFilesByExtensionId: Map<string, LocalVsix
 }
 
 async function main(): Promise<void> {
+	console.log(`[info] Output directory: ${EXTENSIONS_DIR}`)
+
 	const localFilesByExtensionId = await scanLocalVsixFiles()
 	logManagedExtensionDrift(localFilesByExtensionId)
 
