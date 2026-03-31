@@ -2,17 +2,33 @@
   "name": "code-server",
   "type": "module",
   "version": "1.1.0",
+  "private": true,
   "description": "code-server",
   "author": "imba97",
-  "private": true,
   "license": "MIT",
   "scripts": {
+    "lint": "eslint --cache",
+    "lint:fix": "eslint --cache --fix",
+    "type-check": "tsc --noEmit",
     "release": "bumpp",
-    "install-extensions": "esno scripts/install-extensions.ts"
+    "install-extensions": "esno scripts/install-extensions.ts",
+    "prepare": "simple-git-hooks"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^7.7.3",
     "@types/node": "^25.5.0",
     "bumpp": "^9.8.1",
-    "esno": "^4.8.0"
+    "eslint": "^10.1.0",
+    "esno": "^4.8.0",
+    "jiti": "^2.6.1",
+    "nano-staged": "^0.9.0",
+    "simple-git-hooks": "^2.13.1",
+    "typescript": "^6.0.2"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm nano-staged"
+  },
+  "nano-staged": {
+    "*": "eslint --cache --fix"
   }
 }

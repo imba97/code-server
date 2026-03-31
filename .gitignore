@@ -38,3 +38,4 @@ result-*
 *.tmp
 *.bak
 .cache/
+.eslintcache
