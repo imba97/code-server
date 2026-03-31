@@ -5,6 +5,7 @@ with pkgs;
   nodejs
   yarn
   pnpm
+  nodePackages.nrm
   git
   vim
 ]

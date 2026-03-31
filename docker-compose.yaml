@@ -8,11 +8,11 @@ services:
       # 配置在 Dockerfile 上传镜像后会显示出来
       # 所以还是放在本地自己改成其他的
       - PASSWORD=123
-      # NPS 配置
-      - NPS_SERVER=
-      - NPS_KEY=
+      # 前端开发环境优化
+      - NRM_REGISTRY=npm
     volumes:
       - code-server:/home/coder
+      - pnpm-store:/home/coder/.pnpm-store
     ports:
       - 8080:8080/tcp
     restart: unless-stopped

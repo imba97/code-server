@@ -22,6 +22,7 @@ VOLUME [ "/home/coder" ]
 ENV HOST="code-server"
 # 默认工作目录
 ENV DEFAULT_WORKSPACE="/home/coder/workspace"
+ENV NRM_REGISTRY="npm"
 
 USER root
 

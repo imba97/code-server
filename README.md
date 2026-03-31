@@ -4,6 +4,18 @@
 
 方案参考：[monlor/docker-code-server](https://github.com/monlor/docker-code-server)
 
+## 前端开发环境优化
+
+容器启动后会自动完成以下初始化（幂等，可重复启动）：
+
+- 使用 `nrm` 切换到 `NRM_REGISTRY` 指定的源（默认 `npm`）
+- 首次启动生成 `~/.frontend-env.log` 记录 Node、pnpm、nrm 与 registry 信息
+
+可通过 `docker-compose.yaml` 覆盖以下环境变量：
+
+- `NRM_REGISTRY`（默认 `npm`）
+- `DEFAULT_WORKSPACE`（默认 `/home/coder/workspace`）
+
 ## 更新扩展
 
 - 在 [scripts/install-extensions.ts](scripts/install-extensions.ts) 里的 `MANAGED_EXTENSIONS` 维护要跟踪的扩展 ID。
