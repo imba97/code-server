@@ -19,8 +19,6 @@ EXPOSE 8080
 
 VOLUME [ "/home/coder" ]
 
-ARG TARGETARCH
-
 ENV HOST="code-server"
 # 默认工作目录
 ENV DEFAULT_WORKSPACE="/home/coder/workspace"
@@ -32,7 +30,8 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo 'Asia/Shanghai' > /etc/timezone && \
     usermod -s /bin/zsh coder && \
     apt update && \
-    apt install -y cron xz-utils ca-certificates curl
+    apt install -y --no-install-recommends cron xz-utils ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/*
 
 # 切换到 coder 用户安装 Nix
 USER coder
@@ -40,10 +39,10 @@ RUN bash -c "curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | 
 
 # 复制 nix 配置目录
 USER root
-COPY ./nix /tmp/nix
+COPY --chown=coder:coder ./nix /tmp/nix
 RUN mkdir -p /home/coder/.config/nix && \
     cp /tmp/nix/nix.conf /home/coder/.config/nix/nix.conf && \
-    chown -R coder:coder /tmp/nix /home/coder/.config/nix
+    chown -R coder:coder /home/coder/.config/nix
 
 # 构建 Nix 环境 (使用 BuildKit 缓存加速)
 USER coder
@@ -66,22 +65,20 @@ RUN mkdir -p /home/coder/.oh-my-zsh/custom/themes && \
 # 复制由 Nix 生成的 .zshrc、VSCode 配置并设置权限
 RUN cp /home/coder/.nix-profile/etc/.zshrc /home/coder/.zshrc && \
     mkdir -p /opt/code-config
-COPY ./User/settings.json /opt/code-config/
-RUN chown -R coder:coder /home/coder/.nix-profile /home/coder/.zshrc /opt/code-config
+COPY --chown=coder:coder ./User/settings.json /opt/code-config/
+RUN chown -R coder:coder /home/coder/.nix-profile /home/coder/.zshrc
 
 # 复制构建阶段下载的 VSCode 扩展文件（启动时安装）
-COPY --from=extensions-downloader /tmp/extensions /opt/extensions
-RUN mkdir -p /opt/extensions && \
-    chown -R coder:coder /opt/extensions
+COPY --from=extensions-downloader --chown=coder:coder /tmp/extensions /opt/extensions
 
 # 清理临时文件
 USER root
 RUN rm -rf /tmp/nix /tmp/result* /tmp/nix.sh && \
     mkdir -p /home/coder/.config/code-server && \
-    chown -R coder:coder /home/coder/.config
+    chown -R coder:coder /home/coder/.config/code-server
 
 # 添加 start 脚本
-COPY ./scripts/start.sh /opt/
+COPY --chown=coder:coder ./scripts/start.sh /opt/
 RUN chmod +x /opt/start.sh && \
     sed -i '/^exec/i /opt/start.sh' /usr/bin/entrypoint.sh
 
