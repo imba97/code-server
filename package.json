@@ -11,7 +11,6 @@
     "lint:fix": "eslint --cache --fix",
     "type-check": "tsc --noEmit",
     "release": "bumpp",
-    "install-extensions": "esno scripts/install-extensions.ts",
     "prepare": "simple-git-hooks"
   },
   "devDependencies": {
@@ -19,7 +18,6 @@
     "@types/node": "^25.5.0",
     "bumpp": "^9.8.1",
     "eslint": "^10.1.0",
-    "esno": "^4.8.0",
     "jiti": "^2.6.1",
     "nano-staged": "^0.9.0",
     "simple-git-hooks": "^2.13.1",

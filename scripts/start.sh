@@ -1,11 +1,62 @@
 #!/bin/bash
 set -euo pipefail
 
-if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
-  . "$HOME/.nix-profile/etc/profile.d/nix.sh"
-fi
+BOOTSTRAP_HOME="/opt/bootstrap-home"
+BOOTSTRAP_ZSHRC="$BOOTSTRAP_HOME/.zshrc"
+BOOTSTRAP_OMZ="$BOOTSTRAP_HOME/.oh-my-zsh"
+SETTINGS_PATH="${HOME}/.local/share/code-server/User/settings.json"
+GLOBAL_EXTENSIONS_DIR="/opt/code-server/extensions"
+USER_EXTENSIONS_DIR="${HOME}/.local/share/code-server/extensions"
 
-export PATH="$HOME/.nix-profile/bin:$PATH"
+needs_zshrc_restore() {
+  if [ ! -f "$HOME/.zshrc" ]; then
+    return 0
+  fi
+
+  grep -q "zsh-newuser-install" "$HOME/.zshrc"
+}
+
+restore_home_shell() {
+  mkdir -p "$HOME"
+
+  if [ -d "$BOOTSTRAP_OMZ" ] && [ ! -d "$HOME/.oh-my-zsh" ]; then
+    cp -a "$BOOTSTRAP_OMZ" "$HOME/.oh-my-zsh"
+  fi
+
+  if [ -f "$BOOTSTRAP_ZSHRC" ] && needs_zshrc_restore; then
+    cp "$BOOTSTRAP_ZSHRC" "$HOME/.zshrc"
+  fi
+}
+
+link_extensions_dir() {
+  local parent_dir
+
+  if [ ! -d "$GLOBAL_EXTENSIONS_DIR" ]; then
+    return 0
+  fi
+
+  parent_dir="$(dirname "$USER_EXTENSIONS_DIR")"
+  mkdir -p "$parent_dir"
+
+  if [ ! -e "$USER_EXTENSIONS_DIR" ]; then
+    ln -s "$GLOBAL_EXTENSIONS_DIR" "$USER_EXTENSIONS_DIR"
+  fi
+}
+
+write_env_log() {
+  local log_path="$HOME/.frontend-env.log"
+
+  echo "frontend environment initialized" > "$log_path"
+  echo "node: $(node -v 2>/dev/null || echo missing)" >> "$log_path"
+  echo "corepack: $(corepack --version 2>/dev/null || echo missing)" >> "$log_path"
+  echo "pnpm: $(pnpm -v 2>/dev/null || echo missing)" >> "$log_path"
+  echo "yarn: $(yarn -v 2>/dev/null || echo missing)" >> "$log_path"
+  echo "nrm: $(nrm --version 2>/dev/null || echo missing)" >> "$log_path"
+  echo "nrm selected: ${NRM_REGISTRY}" >> "$log_path"
+  echo "npm registry: $(npm config get registry 2>/dev/null || echo unknown)" >> "$log_path"
+}
+
+restore_home_shell
 
 NRM_REGISTRY="${NRM_REGISTRY:-npm}"
 DEFAULT_WORKSPACE="${DEFAULT_WORKSPACE:-$HOME/workspace}"
@@ -13,49 +64,20 @@ SETUP_MARKER="$HOME/.frontend-env-ready"
 
 mkdir -p "$DEFAULT_WORKSPACE"
 
-# 启动定时任务 (Ubuntu/Debian 使用 cron 而非 crond)
 sudo dumb-init /usr/sbin/cron
 
-# 前端环境初始化（可重复执行）
 if command -v nrm >/dev/null 2>&1; then
   nrm use "$NRM_REGISTRY" >/dev/null 2>&1 || nrm use npm >/dev/null 2>&1 || true
 fi
 
 if [ ! -f "$SETUP_MARKER" ]; then
-  {
-    echo "frontend environment initialized"
-    echo "node: $(node -v 2>/dev/null || echo missing)"
-    echo "corepack: $(corepack --version 2>/dev/null || echo missing)"
-    echo "pnpm: $(pnpm -v 2>/dev/null || echo missing)"
-    echo "nrm: $(nrm --version 2>/dev/null || echo missing)"
-    echo "python3: $(python3 --version 2>/dev/null || echo missing)"
-    echo "gcc: $(gcc --version 2>/dev/null | head -n 1 || echo missing)"
-    echo "make: $(make --version 2>/dev/null | head -n 1 || echo missing)"
-    echo "pkg-config: $(pkg-config --version 2>/dev/null || echo missing)"
-    echo "jq: $(jq --version 2>/dev/null || echo missing)"
-    echo "rg: $(rg --version 2>/dev/null | head -n 1 || echo missing)"
-    echo "fd: $(fd --version 2>/dev/null || echo missing)"
-    echo "fzf: $(fzf --version 2>/dev/null || echo missing)"
-    echo "git-lfs: $(git lfs version 2>/dev/null || echo missing)"
-    echo "gh: $(gh --version 2>/dev/null | head -n 1 || echo missing)"
-    echo "nrm selected: ${NRM_REGISTRY}"
-    echo "npm registry: $(npm config get registry 2>/dev/null || echo unknown)"
-  } > "$HOME/.frontend-env.log"
+  write_env_log
   touch "$SETUP_MARKER"
 fi
 
-# 安装 VSCode 扩展（仅首次）
-MARKER="$HOME/.extensions-installed"
-if [ ! -f "$MARKER" ] && [ -d /opt/extensions ]; then
-  echo "Installing VSCode extensions..."
-  for vsix in /opt/extensions/*.vsix; do
-    [ -f "$vsix" ] && code-server --install-extension "$vsix" || true
-  done
-  touch "$MARKER"
-fi
+link_extensions_dir
 
-# vscode 配置 (仅当不存在时复制)
-if [ ! -f "${HOME}/.local/share/code-server/User/settings.json" ]; then
-  mkdir -p "${HOME}/.local/share/code-server/User"
-  cp /opt/code-config/settings.json "${HOME}/.local/share/code-server/User/settings.json"
+if [ ! -f "$SETTINGS_PATH" ]; then
+  mkdir -p "$(dirname "$SETTINGS_PATH")"
+  cp /opt/code-config/settings.json "$SETTINGS_PATH"
 fi

@@ -1,24 +1,34 @@
 # imba97-code-server
 
-个人 `code-server` 配置方案
+个人 `code-server` 配置方案。
 
-方案参考：[monlor/docker-code-server](https://github.com/monlor/docker-code-server)
+参考项目：[monlor/docker-code-server](https://github.com/monlor/docker-code-server)
 
-## 前端开发环境优化
+## 功能
 
-容器启动后会自动完成以下初始化（幂等，可重复启动）：
+- 默认使用 `zsh`，并集成 `oh-my-zsh`
+- 内置前端开发工具，包括 `node`、`npm`、`pnpm`、`yarn`、`nrm`、`eslint`
+- 内置基础命令行工具，包括 `git`
+- 容器启动时会自动补齐 `~/.zshrc` 和 `oh-my-zsh` 配置，兼容已有的 `/home/coder` 持久卷
+- 首次启动时生成 `~/.frontend-env.log`，记录当前工具版本和 npm registry 信息
+- 镜像构建阶段会预下载 VS Code 扩展，首次启动时直接安装本地 VSIX
 
-- 使用 `nrm` 切换到 `NRM_REGISTRY` 指定的源（默认 `npm`）
-- 首次启动生成 `~/.frontend-env.log` 记录 Node、pnpm、nrm 与 registry 信息
+## 环境变量
 
-可通过 `docker-compose.yaml` 覆盖以下环境变量：
+可在 `docker-compose.yaml` 中覆盖以下变量：
 
-- `NRM_REGISTRY`（默认 `npm`）
-- `DEFAULT_WORKSPACE`（默认 `/home/coder/workspace`）
+- `NRM_REGISTRY`：默认值为 `npm`
+- `DEFAULT_WORKSPACE`：默认值为 `/home/coder/workspace`
 
-## 更新扩展
+## 扩展管理
 
-- 在 [scripts/install-extensions.ts](scripts/install-extensions.ts) 里的 `MANAGED_EXTENSIONS` 维护要跟踪的扩展 ID。
-- 运行 `pnpm run install-extensions` 后，脚本会把最新 VSIX 下载到 `.cache/extensions`；也可以通过 `EXTENSIONS_DIR` 覆盖输出目录。
-- Docker 镜像在构建阶段会自动运行这个脚本，把下载好的 VSIX 复制进镜像里的 `/opt/extensions`。
-- 容器首次启动时会安装这些镜像内置的本地 VSIX，因此仓库里不再需要提交扩展二进制文件。
+- [scripts/install-extensions.sh](scripts/install-extensions.sh) 会在镜像构建阶段直接从 VS Code Marketplace 下载扩展
+- 下载完成后会在构建阶段安装到镜像内的全局扩展目录
+- 容器启动时只会将用户扩展目录指向镜像内的全局扩展目录，不再逐个安装扩展
+
+## 相关脚本
+
+- [Dockerfile](Dockerfile)：安装前端开发工具和基础环境
+- [scripts/install-extensions.sh](scripts/install-extensions.sh)：镜像构建阶段下载扩展 VSIX
+- [scripts/zshrc](scripts/zshrc)：默认 shell 配置
+- [scripts/start.sh](scripts/start.sh)：启动时执行环境初始化和本地扩展安装

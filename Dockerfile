@@ -1,16 +1,4 @@
 # https://github.com/coder/code-server/releases/latest
-FROM node:22-bookworm-slim AS extensions-downloader
-
-WORKDIR /workspace
-
-COPY ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./tsconfig.json ./
-COPY ./scripts/install-extensions.ts ./scripts/install-extensions.ts
-
-RUN corepack enable && \
-    pnpm install --frozen-lockfile
-
-RUN EXTENSIONS_DIR=/tmp/extensions pnpm run install-extensions
-
 FROM codercom/code-server:latest
 
 LABEL MAINTAINER="mail@imba97.cn"
@@ -20,65 +8,77 @@ EXPOSE 8080
 VOLUME [ "/home/coder" ]
 
 ENV HOST="code-server"
-# 默认工作目录
 ENV DEFAULT_WORKSPACE="/home/coder/workspace"
 ENV NRM_REGISTRY="npm"
 
 USER root
 
-# 初始化配置
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    echo 'Asia/Shanghai' > /etc/timezone && \
-    usermod -s /bin/zsh coder && \
-    apt update && \
-    apt install -y --no-install-recommends cron xz-utils ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
+    echo 'Asia/Shanghai' > /etc/timezone
 
-# 切换到 coder 用户安装 Nix
-USER coder
-RUN bash -c "curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh -s -- --no-daemon --no-modify-profile"
+RUN apt update && \
+    apt install -y --no-install-recommends \
+      ca-certificates \
+      curl \
+      cron \
+      zsh \
+      git \
+      sudo \
+      gnupg
 
-# 复制 nix 配置目录
-USER root
-COPY --chown=coder:coder ./nix /tmp/nix
-RUN mkdir -p /home/coder/.config/nix && \
-    cp /tmp/nix/nix.conf /home/coder/.config/nix/nix.conf && \
-    chown -R coder:coder /home/coder/.config/nix
+RUN install -d -m 0755 /etc/apt/keyrings
 
-# 构建 Nix 环境 (使用 BuildKit 缓存加速)
-USER coder
-RUN --mount=type=cache,target=/home/coder/.cache/nix,uid=1000,gid=1000 \
-    bash -c ". /home/coder/.nix-profile/etc/profile.d/nix.sh && cd /tmp/nix && nix --extra-experimental-features 'nix-command flakes' build .#default"
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
 
-# 安装构建结果
-USER root
-RUN cp /home/coder/.nix-profile/etc/profile.d/nix.sh /tmp/nix.sh && \
-    rm -rf /home/coder/.nix-profile/* && \
-    cp -r /tmp/nix/result/* /home/coder/.nix-profile/ && \
-    mkdir -p /home/coder/.nix-profile/etc/profile.d && \
-    cp /tmp/nix.sh /home/coder/.nix-profile/etc/profile.d/nix.sh
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" > /etc/apt/sources.list.d/nodesource.list
 
-# 安装 spaceship 主题
-RUN mkdir -p /home/coder/.oh-my-zsh/custom/themes && \
-    /home/coder/.nix-profile/bin/git clone https://github.com/denysdovhan/spaceship-prompt.git /home/coder/.oh-my-zsh/custom/themes/spaceship-prompt --depth=1 && \
-    ln -s /home/coder/.oh-my-zsh/custom/themes/spaceship-prompt/spaceship.zsh-theme /home/coder/.oh-my-zsh/custom/themes/spaceship.zsh-theme
+RUN apt update && \
+    apt install -y --no-install-recommends nodejs
 
-# 复制由 Nix 生成的 .zshrc、VSCode 配置并设置权限
-RUN cp /home/coder/.nix-profile/etc/.zshrc /home/coder/.zshrc && \
-    mkdir -p /opt/code-config
+RUN corepack enable
+
+RUN npm install -g npm-check-updates
+
+RUN npm install -g eslint
+
+RUN npm install -g nrm
+
+RUN rm -rf /var/lib/apt/lists/*
+
+RUN usermod -s /bin/zsh coder
+
+RUN mkdir -p /opt/bootstrap-home
+
+RUN mkdir -p /opt/code-config /opt/extensions /opt/code-server/extensions
+
+RUN git clone https://github.com/ohmyzsh/ohmyzsh.git /opt/bootstrap-home/.oh-my-zsh --depth=1
+
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions /opt/bootstrap-home/.oh-my-zsh/custom/plugins/zsh-autosuggestions --depth=1
+
+RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting /opt/bootstrap-home/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting --depth=1
+
+RUN git clone https://github.com/spaceship-prompt/spaceship-prompt.git /opt/bootstrap-home/.oh-my-zsh/custom/themes/spaceship-prompt --depth=1
+
+RUN ln -s /opt/bootstrap-home/.oh-my-zsh/custom/themes/spaceship-prompt/spaceship.zsh-theme /opt/bootstrap-home/.oh-my-zsh/custom/themes/spaceship.zsh-theme
+
+COPY --chown=coder:coder ./scripts/zshrc /opt/bootstrap-home/.zshrc
 COPY --chown=coder:coder ./User/settings.json /opt/code-config/
-RUN chown -R coder:coder /home/coder/.nix-profile /home/coder/.zshrc
+COPY ./scripts/install-extensions.sh /tmp/install-extensions.sh
 
-# 复制构建阶段下载的 VSCode 扩展文件（启动时安装）
-COPY --from=extensions-downloader --chown=coder:coder /tmp/extensions /opt/extensions
+RUN chmod +x /tmp/install-extensions.sh && \
+    EXTENSIONS_DIR=/opt/extensions /tmp/install-extensions.sh && \
+    for vsix in /opt/extensions/*.vsix; do \
+      if [ -f "$vsix" ]; then \
+        code-server --user-data-dir /tmp/code-server-data --extensions-dir /opt/code-server/extensions --install-extension "$vsix"; \
+      fi; \
+    done && \
+    rm -rf /tmp/code-server-data /tmp/install-extensions.sh /opt/extensions
 
-# 清理临时文件
-USER root
-RUN rm -rf /tmp/nix /tmp/result* /tmp/nix.sh && \
-    mkdir -p /home/coder/.config/code-server && \
+RUN chown -R coder:coder /opt/bootstrap-home /opt/code-config /opt/code-server/extensions
+
+RUN mkdir -p /home/coder/.config/code-server && \
     chown -R coder:coder /home/coder/.config/code-server
 
-# 添加 start 脚本
 COPY --chown=coder:coder ./scripts/start.sh /opt/
 RUN chmod +x /opt/start.sh && \
     sed -i '/^exec/i /opt/start.sh' /usr/bin/entrypoint.sh
